@@ -15,8 +15,24 @@ use constant READ_TIMEOUT => 3;
 
 use base qw(Net::Server::PreFork);
 
+sub new {
+   my $that = shift;
+   my $proto = ref($that) || $that;
+   my $self = $proto->SUPER::new(@_);
+
+   my $p = { @_ };
+
+   bless($self, $proto);
+
+   $self->{'on_request'} = $p->{'on_request'};
+   $self->{'on_header'}  = $p->{'on_header'};
+
+   return $self;
+}
+
 sub run {
    my $self = shift;
+
 
    $self->SUPER::run(
       port => '8080',
@@ -30,6 +46,7 @@ sub run {
       listen => 1024,
       no_client_stdout => 1
    );
+
 }
 
 sub process_request {
@@ -38,15 +55,35 @@ sub process_request {
 
    setsockopt($c, IPPROTO_TCP, TCP_NODELAY, 1) or die($!);
 
-   my %env;
+   my %env = (
+      REMOTE_ADDR => $self->{'server'}->{'peeraddr'},
+      REMOTE_HOST => $self->{'server'}->{'peerhost'} || $self->{'server'}->{'peeraddr'},
+      SERVER_NAME => $self->{'server'}->{'sockaddr'},
+      SERVER_PORT => $self->{'server'}->{'sockport'},
+      SCRIPT_NAME => ''
+   );
+
    my $ret = parse_http_request($self->_fetch_header, \%env);
+  
    if($ret == -1) {
       print STDERR "Request broken...\n";
       return;
    }
 
-   syswrite $c, qq~HTTP/1.0 200 OK$CRLF${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello$CRLF${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello${CRLF}hello~;
+   if(defined $self->{'on_header'}) {
+      my $hdr_call = $self->{'on_header'};
+      &$hdr_call(\%env, $c);
+   }
 
+   my $call = $self->{'on_request'};
+   $ret  = &$call(\%env, $c);
+
+   if(defined $self->{'on_response'}) {
+      my $r_call = $self->{'on_response'};
+      $ret = $r_call(\%env, $c, $ret);
+   }
+
+   print $c $ret;
 }
 
 sub _fetch_header {

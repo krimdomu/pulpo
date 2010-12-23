@@ -4,6 +4,21 @@ use strict;
 use warnings;
 
 use Pulpo::Server;
+use Data::Dumper;
 
-Pulpo::Server->run;
+Pulpo::Server->new(
+               on_request => sub {
+                              my($env, $client) = @_;
+
+                              return 'Hello World';
+                           },
+               on_header => sub {
+                              my($hdr, $client) = @_;
+                              $hdr->{'X-MyAddr'} = 'blub';
+                           },
+               on_response => sub {
+                              my($hdr, $client, $ret) = @_;
+
+                           }
+            )->run;
 
