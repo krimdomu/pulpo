@@ -3,22 +3,23 @@
 use strict;
 use warnings;
 
-use Pulpo::Server;
+use Pulpo;
 use Data::Dumper;
 
 Pulpo::Server->new(
                on_request => sub {
                               my($env, $client) = @_;
 
-                              return 'Hello World';
+                              return "Hello World!\n";
                            },
                on_header => sub {
                               my($hdr, $client) = @_;
-                              $hdr->{'X-MyAddr'} = 'blub';
+                              $hdr->{'X-ServerSoftware'} = 'Pulpo ' . $Pulpo::VERSION;
                            },
                on_response => sub {
                               my($hdr, $client, $ret) = @_;
 
                            }
             )->run;
+
 

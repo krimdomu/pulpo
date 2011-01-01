@@ -12,6 +12,7 @@ use HTTP::Parser::XS qw(parse_http_request);
 
 use constant READ_LEN     => 64 * 1024;
 use constant READ_TIMEOUT => 3;
+use constant WRITE_LEN    => 64 * 1024;
 
 use base qw(Net::Server::PreFork);
 
@@ -78,12 +79,16 @@ sub process_request {
    my $call = $self->{'on_request'};
    $ret  = &$call(\%env, $c);
 
-   if(defined $self->{'on_response'}) {
+   if(exists $self->{'on_response'}) {
       my $r_call = $self->{'on_response'};
-      $ret = $r_call(\%env, $c, $ret);
+      $ret = &$r_call(\%env, $c, $ret);
    }
 
-   print $c $ret;
+   my $len = length($ret);
+   for(my $i = 0; $i < $len; $i) {
+      syswrite $c, substr($ret, $i, WRITE_LEN);
+      $i+=WRITE_LEN;
+   }
 }
 
 sub _fetch_header {
