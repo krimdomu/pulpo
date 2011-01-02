@@ -1,4 +1,16 @@
 =pod
 
-Simple Pre-Forking Webserver
+=head2 Simple Pre-Forking Webserver
+
+=head2 Dependencies
+
+=over 4
+
+=item Net::Server::PreFork
+
+=item HTTP::Parser::XS
+
+=back
+
+=cut
 
