@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!perl
 
 use strict;
 use warnings;
@@ -6,20 +6,8 @@ use warnings;
 use Pulpo;
 use Data::Dumper;
 
-Pulpo::Server->new(
-               on_request => sub {
-                              my($env, $client) = @_;
+use Pulpo::Plugin::Request::Simple;
 
-                              return "Hello World!\n";
-                           },
-               on_header => sub {
-                              my($hdr, $client) = @_;
-                              $hdr->{'X-ServerSoftware'} = 'Pulpo ' . $Pulpo::VERSION;
-                           },
-               on_response => sub {
-                              my($hdr, $client, $ret) = @_;
-
-                           }
-            )->run;
+Pulpo::Server->new->run;
 
 
