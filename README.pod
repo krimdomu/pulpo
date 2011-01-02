@@ -6,9 +6,13 @@
 
 =over 4
 
-=item Net::Server::PreFork
+=item *
 
-=item HTTP::Parser::XS
+L<Net::Server::PreFork>
+
+=item *
+
+L<HTTP::Parser::XS>
 
 =back
 
