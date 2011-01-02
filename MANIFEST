@@ -1,4 +1,4 @@
-bin/pulop
+bin/pulpo
 lib/Pulpo.pm
 lib/Pulpo/Exception.pm
 lib/Pulpo/Exception/NoRequestModule.pm
